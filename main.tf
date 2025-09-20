@@ -139,7 +139,7 @@ resource "aws_security_group" "k8s_cluster" {
 # Create a key pair for SSH access
 resource "aws_key_pair" "k8s-key" {
   key_name   = "k8s-key"
-  public_key = file("${path.module}/ssh/k8s-key.pub")
+  public_key = file("${path.module}/k8s-key.pub")
 }
 
 # Jumpbox - Administration host (1 vCPU, 512MB RAM, 10GB storage)
@@ -257,37 +257,19 @@ resource "aws_instance" "node_1" {
 
 
 
-# Output values for the Kubernetes cluster instances
-
-output "jumpbox_public_ip" {
-  description = "Public IP address of the jumpbox (administration host)"
-  value       = aws_instance.jumpbox.public_ip
-}
-
-output "server_public_ip" {
-  description = "Public IP address of the Kubernetes server (control plane)"
-  value       = aws_instance.server.public_ip
-}
-
-output "node_0_public_ip" {
-  description = "Public IP address of node-0 (worker node)"
-  value       = aws_instance.node_0.public_ip
-}
-
-output "node_1_public_ip" {
-  description = "Public IP address of node-1 (worker node)"
-  value       = aws_instance.node_1.public_ip
-}
-
-output "cluster_info" {
-  description = "Kubernetes cluster information"
-  value = {
-    jumpbox_ip = aws_instance.jumpbox.public_ip
-    server_ip  = aws_instance.server.public_ip
-    node_0_ip  = aws_instance.node_0.public_ip
-    node_1_ip  = aws_instance.node_1.public_ip
-    ssh_key    = "k8s-key"
-  }
+# Generate machines.txt file for Kubernetes "the hard way" tutorial
+resource "local_file" "machines_txt" {
+  filename = "${path.module}/machines.txt"
+  content = templatefile("${path.module}/machines.txt.tpl", {
+    server_private_ip = aws_instance.server.private_ip
+    node_0_private_ip = aws_instance.node_0.private_ip
+    node_1_private_ip = aws_instance.node_1.private_ip
+    jumpbox_public_ip = aws_instance.jumpbox.public_ip
+    server_public_ip  = aws_instance.server.public_ip
+    node_0_public_ip  = aws_instance.node_0.public_ip
+    node_1_public_ip  = aws_instance.node_1.public_ip
+    pod_subnets       = var.pod_subnets
+  })
 }
 
 

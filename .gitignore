@@ -1,7 +1,4 @@
 # Local .terraform directories
-/ssh/
-
-
 **/.terraform/*
 
 # .tfstate files
@@ -33,13 +30,13 @@ override.tf.json
 terraform.rc
 
 # SSH private keys (sensitive)
-ssh/main-key
-ssh/*.pem
-ssh/*.key
-ssh/*.ppk
-ssh/id_rsa
-ssh/id_ed25519
-ssh/known_hosts
+k8s-key.pem
+*.pem
+*.key
+*.ppk
+id_rsa
+id_ed25519
+known_hosts
 
 # Terraform plan files (may contain sensitive data)
 *.tfplan
@@ -50,6 +47,9 @@ ssh/known_hosts
 
 # Terraform text output files
 terraform.txt
+
+# Generated machine database
+machines.txt
 
 # Environment-specific files
 .env

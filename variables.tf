@@ -16,4 +16,13 @@ variable "instance_name" {
   description = "Name tag for the EC2 instance"
   type        = string
   default     = "main-instance"
+}
+
+variable "pod_subnets" {
+  description = "Pod subnets for worker nodes"
+  type = map(string)
+  default = {
+    node-0 = "10.200.0.0/24"
+    node-1 = "10.200.1.0/24"
+  }
 } 
