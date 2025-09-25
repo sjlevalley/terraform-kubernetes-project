@@ -60,3 +60,14 @@ output "cluster_info" {
     ssh_key    = "k8s-key"
   }
 }
+
+output "ssh_connection_info" {
+  description = "SSH connection information"
+  value = {
+    private_key_file = local_file.k8s_private_key.filename
+    ssh_command_jumpbox = "ssh -i k8s-key.pem admin@${aws_instance.jumpbox.public_ip}"
+    ssh_command_server = "ssh -i k8s-key.pem admin@${aws_instance.server.public_ip}"
+    ssh_command_node_0 = "ssh -i k8s-key.pem admin@${aws_instance.node_0.public_ip}"
+    ssh_command_node_1 = "ssh -i k8s-key.pem admin@${aws_instance.node_1.public_ip}"
+  }
+}

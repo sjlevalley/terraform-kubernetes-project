@@ -136,10 +136,30 @@ resource "aws_security_group" "k8s_cluster" {
   }
 }
 
+# Generate SSH key pair
+resource "tls_private_key" "k8s_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 # Create a key pair for SSH access
 resource "aws_key_pair" "k8s-key" {
   key_name   = "k8s-key"
-  public_key = file("${path.module}/k8s-key.pub")
+  public_key = tls_private_key.k8s_key.public_key_openssh
+}
+
+# Save the private key to a file
+resource "local_file" "k8s_private_key" {
+  content  = tls_private_key.k8s_key.private_key_pem
+  filename = "${path.module}/k8s-key.pem"
+  file_permission = "0600"
+}
+
+# Save the public key to a file (optional)
+resource "local_file" "k8s_public_key" {
+  content  = tls_private_key.k8s_key.public_key_openssh
+  filename = "${path.module}/k8s-key.pub"
+  file_permission = "0644"
 }
 
 # Jumpbox - Administration host (1 vCPU, 512MB RAM, 10GB storage)
