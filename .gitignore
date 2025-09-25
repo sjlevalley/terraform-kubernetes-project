@@ -38,6 +38,9 @@ id_rsa
 id_ed25519
 known_hosts
 
+# Project steps
+# /steps
+
 # Terraform plan files (may contain sensitive data)
 *.tfplan
 *.tfplan.*
