@@ -1,5 +1,7 @@
 # Bootstrapping the Kubernetes Control Plane
 
+**Run this Step from the Jumpbox**
+
 In this lab you will bootstrap the Kubernetes control plane. The following components will be installed on the `server` machine: Kubernetes API Server, Scheduler, and Controller Manager.
 
 ## Prerequisites
@@ -155,7 +157,7 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/reference/access-authn-authz/authorization/#checking-api-access) API to determine authorization.
 
-The commands in this section will affect the entire cluster and only need to be run on the `server` machine.
+The commands in this section will affect the entire cluster and only need to be run on the `server` machine (if not already connected to it).
 
 ```bash
 ssh admin@server

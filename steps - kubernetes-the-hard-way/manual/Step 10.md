@@ -1,5 +1,7 @@
 # Configuring kubectl for Remote Access
 
+**Run from the Jumpbox Machine**
+
 In this lab you will generate a kubeconfig file for the `kubectl` command line utility based on the `admin` user credentials.
 
 > Run the commands in this lab from the `jumpbox` machine.

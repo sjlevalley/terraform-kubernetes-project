@@ -16,7 +16,7 @@ All commands will be run as the admin user. This is being done for the sake of c
 
 2. Update the Server
    {
-   `sudo apt-get update && sudo apt-get -y install wget curl vim openssl git`
+   sudo apt-get update && sudo apt-get -y install wget curl vim openssl git
    }
 
 ---
@@ -146,7 +146,7 @@ Since you already have the `k8s-key.pem` and `k8s-key.pub` files from your Terra
 
 Next: Provisioning Compute Resources
 
-**Initial Setup of Jumpbox**
+<!-- **Initial Setup of Jumpbox**
 
 In this lab you will set up one of the four machines to be a jumpbox. This machine will be used to run commands throughout this tutorial. While a dedicated machine is being used to ensure consistency, these commands can also be run from just about any machine including your personal workstation running macOS or Linux.
 
@@ -290,6 +290,6 @@ Since you already have the `k8s-key.pem` and `k8s-key.pub` files from your Terra
     ```bash
     # Test that the key works
     ssh-keygen -y -f ~/.ssh/id_rsa
-    ```
+    ``` -->
 
 Next: Provisioning Compute Resources

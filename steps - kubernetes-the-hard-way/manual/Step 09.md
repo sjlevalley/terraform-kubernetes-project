@@ -1,5 +1,7 @@
 # Bootstrapping the Kubernetes Worker Nodes
 
+**Run from the Jumpbox**
+
 In this lab you will bootstrap two Kubernetes worker nodes. The following components will be installed: [runc](https://github.com/opencontainers/runc), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet), and [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies).
 
 ## Prerequisites
@@ -34,7 +36,7 @@ for HOST in node-0 node-1; do
     units/kubelet.service \
     units/kube-proxy.service \
     admin@${HOST}:~/
-done
+done 
 ```
 
 ```bash

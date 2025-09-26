@@ -77,8 +77,13 @@ In this section you will verify the ability to access applications remotely usin
 Retrieve the full name of the `nginx` pod:
 
 ```bash
-POD_NAME=$(kubectl get pods -l app=nginx \
-  -o jsonpath="{.items[0].metadata.name}")
+POD_NAME=$(kubectl get pods -l app=nginx -o jsonpath="{.items[0].metadata.name}")
+```
+
+Verify the pod name was retrieved correctly:
+
+```bash
+echo $POD_NAME
 ```
 
 Forward port `8080` on your local machine to port `80` of the `nginx` pod:

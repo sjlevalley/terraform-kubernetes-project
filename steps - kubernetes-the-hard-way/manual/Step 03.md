@@ -22,7 +22,9 @@ XXX.XXX.XXX.XXX node-1.kubernetes.local node-1 10.200.1.0/24
 
 Now it's your turn to create a machines.txt file with the details for the three machines you will be using to create your Kubernetes cluster. Use the example machine database from above and add the details for your machines.
 
-**Configuring SSH Access**
+**Section Not needed as we copy keys to jumpbox in Step 02
+
+<!-- **Configuring SSH Access**
 
 SSH will be used to configure the machines in the cluster. We'll use the admin user for all SSH operations, which is the default user on AWS EC2 instances.
 
@@ -73,7 +75,7 @@ Once each key is added, verify SSH public key access is working:
     while read IP FQDN HOST SUBNET; do
     ssh -n admin@${IP} hostname
     done < machines.txt
-    }
+    } -->
 
 **Hostnames**
 
@@ -112,8 +114,8 @@ In this section you will generate a hosts file which will be appended to /etc/ho
 
 Create a new hosts file and add a header to identify the machines being added:
 
-7. `echo "" > hosts`
-   `echo "# Kubernetes The Hard Way" >> hosts`
+7. `echo "" > hosts && echo "# Kubernetes The Hard Way" >> hosts`
+   
 
 Generate a host entry for each machine in the machines.txt file and append it to the hosts file:
 
@@ -189,6 +191,7 @@ Copy the hosts file to each machine and append the contents to /etc/hosts:
     done < machines.txt
     }
 
+** TODO: This does not yet work
 At this point, hostnames can be used when connecting to machines from your jumpbox machine, or any of the three machines in the Kubernetes cluster. Instead of using IP addresses you can now connect to machines using a hostname such as server, node-0, or node-1.
 
 This is one of the steps in Kelsey Hightower's 'Kubernetes the hard way' github repo, which I am attempting to set up on AWS EC2 instances

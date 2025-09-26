@@ -1,5 +1,7 @@
 # Provisioning a CA and Generating TLS Certificates
 
+**Run from the Jumpbox**
+
 In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using openssl to bootstrap a Certificate Authority, and generate TLS certificates for the following components: kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy. The commands in this section should be run from the `jumpbox`.
 
 ## Certificate Authority
