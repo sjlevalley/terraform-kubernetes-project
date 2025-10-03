@@ -97,7 +97,6 @@ done
 ```
 
 Copy the appropriate certificates and private keys to the `server` machine:
-
 ```bash
 scp \
   ca.key ca.crt \

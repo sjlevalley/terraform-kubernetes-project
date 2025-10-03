@@ -187,7 +187,6 @@ sudo sed -i 's|--v=2|--hostname-override=node-1 \\\n  --v=2|' /etc/systemd/syste
 ```
 
 Check if the kubelet service is running:
-
 ```bash
 sudo systemctl is-active kubelet
 ```
