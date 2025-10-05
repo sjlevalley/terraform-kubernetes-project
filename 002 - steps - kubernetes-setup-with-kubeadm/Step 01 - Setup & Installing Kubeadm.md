@@ -1,4 +1,5 @@
 
+# Step 01 - Setup & Installing Kubeadm
 
 **Run the following command on all 3 Nodes (from the 'Installing Kubeadm' page)**
 
@@ -17,11 +18,9 @@
 ***Update the apt package index and install packages needed to use the Kubernetes apt repository. DO ON ALL NODES***
 
 ```bash
-{
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-}
 ```
 
 - Note: If the above curl command fails, run this command, then run the curl command again. 
@@ -31,11 +30,16 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --
 
 <!-- Update the apt package index, install kubelet, kubeadm and kubectl, and pin their version: -->
 ```bash
-{
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
-}
+```
+
+**Verify Installation**
+```bash
+kubeadm version
+kubectl version --client
+kubelet --version
 ```
 
 <!-- Now you can proceed to the 'Creating A Cluster' page -->

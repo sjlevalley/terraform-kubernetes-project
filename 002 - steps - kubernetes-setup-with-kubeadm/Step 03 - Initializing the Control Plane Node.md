@@ -1,10 +1,11 @@
 # Step 03 - Initializing the Control Plane Node
 
 ## Prerequisites
+- Complete Step 02 (Install Container Runtime) first - this includes configuring containerd with systemd cgroup driver
 - Go back to the 'Creating a cluster with Kubeadm' page on the Kubernetes documentation.
 - Follow the steps in the 'Initializing your control-plane node' section.
 
-## Step 1: Enable IP Forwarding
+## Step 1: Enable IP Forwarding - Needs to be run on All Nodes
 IP forwarding is required for Kubernetes networking to work properly.
 
 ```bash
@@ -25,37 +26,7 @@ Set a proper hostname to avoid DNS resolution warnings.
 sudo hostnamectl set-hostname master-node
 ```
 
-## Step 3: Configure Containerd with Systemd Cgroup Driver
-This is critical for Kubernetes to work properly with containerd.
-
-```bash
-# Create a complete containerd configuration
-sudo tee /etc/containerd/config.toml > /dev/null << 'EOF'
-version = 2
-
-[plugins]
-  [plugins."io.containerd.grpc.v1.cri"]
-    [plugins."io.containerd.grpc.v1.cri".cni]
-      bin_dir = "/usr/lib/cni"
-      conf_dir = "/etc/cni/net.d"
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-          runtime_type = "io.containerd.runc.v2"
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-            SystemdCgroup = true
-  [plugins."io.containerd.internal.v1.opt"]
-    path = "/var/lib/containerd/opt"
-EOF
-
-# Restart containerd to apply the configuration
-sudo systemctl restart containerd
-
-# Verify containerd is running
-sudo systemctl status containerd
-```
-
-## Step 4: Initialize the Kubernetes Cluster
+## Step 3: Initialize the Kubernetes Cluster
 ## Must be run on Master node
 Use the correct IP addresses from your Terraform deployment.
 ```bash
@@ -77,14 +48,14 @@ sudo kubeadm init --apiserver-advertise-address 172.31.20.247 --pod-network-cidr
 ### Issue 3: API Server Not Starting
 **Error:** `container.Runtime.Name must be set: invalid argument`
 
-**Solution:** This indicates containerd configuration is missing the runtime type. Follow Step 3 above to create a complete containerd configuration.
+**Solution:** This indicates containerd configuration is missing the runtime type. Follow Step 02 (Install Container Runtime) to create a complete containerd configuration.
 
 ### Issue 4: Containerd Service Fails to Start
 **Error:** `Job for containerd.service failed because the control process exited with error code`
 
 **Solution:** Check the containerd configuration syntax and ensure proper indentation in the TOML file.
 
-## Step 5: Configure kubectl for Regular User
+## Step 4: Configure kubectl for Regular User
 After successful initialization, configure kubectl to use the cluster.
 
 ```bash
@@ -98,7 +69,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-## Step 6: Deploy Pod Network
+## Step 5: Deploy Pod Network
 You need to deploy a pod network add-on before your cluster can be used.
 
 ```bash
@@ -106,7 +77,7 @@ You need to deploy a pod network add-on before your cluster can be used.
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
 ```
 
-## Step 7: Worker Node Join Command
+## Step 6: Worker Node Join Command
 Save this command for joining your worker nodes to the cluster:
 
 ```bash

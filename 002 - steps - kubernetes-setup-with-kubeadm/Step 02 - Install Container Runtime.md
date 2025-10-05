@@ -1,3 +1,5 @@
+# Step 02 - Install Container Runtime
+
 - Navigate to the following URL (Creating a Cluster)
 https://v1-31.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
 
@@ -10,10 +12,8 @@ https://v1-31.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm
 - Find the 'Getting started with containerd' page
 - Install containerd using the following commands:
 ```bash
-{
-    sudo apt update
-    sudo apt install -y containerd
-}
+sudo apt update
+sudo apt install -y containerd
 ```
 
 
@@ -33,7 +33,7 @@ PID TTY          TIME CMD
 - Note that this step is not automatic and must be done. 
 - Instructions can be found on the 'Container Runtimes > containerd page under the 'Configuring the systemd cgroup driver' section
 
-- Run the following command to set the 'SystemdCgroup = true' on the /etc/containderd/config.toml file. 
+- Run the following command to set the 'SystemdCgroup = true' on the /etc/containerd/config.toml file. 
 
 ```bash
 sudo tee /etc/containerd/config.toml > /dev/null << 'EOF'
@@ -58,6 +58,11 @@ EOF
 - Restart containerd service on each Node
 `sudo systemctl restart containerd`
 
+**Verify containerd is running**
+```bash
+sudo systemctl status containerd
+sudo systemctl is-active containerd
+```
 
 **Now you can Go to Step 03 - Creating a Cluster With Kubeadm
 
