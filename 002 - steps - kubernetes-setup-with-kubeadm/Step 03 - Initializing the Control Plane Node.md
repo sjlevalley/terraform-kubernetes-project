@@ -1,37 +1,86 @@
 # Step 03 - Initializing the Control Plane Node
 
-## Prerequisites
-- Complete Step 02 (Install Container Runtime) first - this includes configuring containerd with systemd cgroup driver
-- Go back to the 'Creating a cluster with Kubeadm' page on the Kubernetes documentation.
-- Follow the steps in the 'Initializing your control-plane node' section.
 
 ## Step 1: Enable IP Forwarding - Needs to be run on All Nodes
 IP forwarding is required for Kubernetes networking to work properly.
 
+*****RUN ON ALL NODES*****
 ```bash
-# 1. Enable IP forwarding temporarily
-sudo sysctl net.ipv4.ip_forward=1
-
-# 2. Make it permanent
-echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf
-
-# 3. Verify IP forwarding is enabled (should return 1)
-cat /proc/sys/net/ip_forward
+{
+sudo sysctl net.ipv4.ip_forward=1 # Enable IP forwarding temporarily
+echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf # Make it permanent
+cat /proc/sys/net/ipv4/ip_forward # Verify IP forwarding is enabled (should return 1)
+}
 ```
 
-## Step 2: Set Proper Hostname
+## Step 2: Set Proper Hostname On Each Node
 Set a proper hostname to avoid DNS resolution warnings.
 
 ```bash
-sudo hostnamectl set-hostname master-node
+sudo hostnamectl set-hostname master
+# sudo hostnamectl set-hostname node-0
+# sudo hostnamectl set-hostname node-1
 ```
 
 ## Step 3: Initialize the Kubernetes Cluster
-## Must be run on Master node
+
+***ONLY RUN ON MASTER NODE***
 Use the correct IP addresses from your Terraform deployment.
 ```bash
-sudo kubeadm init --apiserver-advertise-address 172.31.20.247 --pod-network-cidr "10.200.0.0/16" --upload-certs
+sudo kubeadm init --apiserver-advertise-address <MASTER_NODE_PRIVATE_IP> --pod-network-cidr "10.244.0.0/16" --upload-certs
 ```
+
+
+
+## Step 4: Configure kubectl for Regular User
+After successful initialization, configure kubectl to use the cluster.
+
+***ONLY RUN ON MASTER NODE***
+```bash
+{
+# Create .kube directory
+mkdir -p $HOME/.kube
+
+# Copy admin configuration
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+# Set proper ownership
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+}
+```
+
+## Step 5: Deploy Pod Network
+You need to deploy a pod network add-on before your cluster can be used.
+
+```bash
+# Example: Deploy Flannel network
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+# Example: Deploy Calico network (recommended for this setup)
+# kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
+
+```
+
+## Step 6: Worker Node Join Command
+Save this command for joining your worker nodes to the cluster:
+
+```bash
+# Join worker nodes to the cluster (run this on each worker node)
+sudo kubeadm join 172.31.19.113:6443 --token <TOKEN> \
+        --discovery-token-ca-cert-hash sha256:<HASH>
+```
+
+**Note:** The token and hash values will be different for your cluster. Use the exact values provided by your kubeadm init output.
+
+
+
+
+
+
+
+
+
+
 
 ## Troubleshooting Common Issues
 
@@ -55,38 +104,38 @@ sudo kubeadm init --apiserver-advertise-address 172.31.20.247 --pod-network-cidr
 
 **Solution:** Check the containerd configuration syntax and ensure proper indentation in the TOML file.
 
-## Step 4: Configure kubectl for Regular User
-After successful initialization, configure kubectl to use the cluster.
+### Issue 5: Duplicate Join Attempt
+**Error:** `[ERROR FileAvailable--etc-kubernetes-kubelet.conf]: /etc/kubernetes/kubelet.conf already exists`
+
+**Solution:** This happens when a node has been partially joined before. Reset the node and try again:
 
 ```bash
-# Create .kube directory
-mkdir -p $HOME/.kube
+# 1. Reset kubeadm on this node
+sudo kubeadm reset --force
 
-# Copy admin configuration
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# 2. Stop and disable kubelet
+sudo systemctl stop kubelet
+sudo systemctl disable kubelet
 
-# Set proper ownership
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# 3. Clean up any remaining files
+sudo rm -rf /etc/kubernetes/
+sudo rm -rf /var/lib/kubelet/
+sudo rm -rf /var/lib/etcd/
+
+# 4. Now try the join command again
+sudo kubeadm join 172.31.19.113:6443 --token <TOKEN> \
+        --discovery-token-ca-cert-hash sha256:<HASH>
 ```
 
-## Step 5: Deploy Pod Network
-You need to deploy a pod network add-on before your cluster can be used.
+### Issue 6: Expired Join Token
+**Error:** `[ERROR TokenInvalid]: token is invalid due to time`
+
+**Solution:** Generate a new join token from the master node:
 
 ```bash
-# Example: Deploy Calico network (recommended for this setup)
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
+# On the master node, generate a new join token
+sudo kubeadm token create --print-join-command
 ```
-
-## Step 6: Worker Node Join Command
-Save this command for joining your worker nodes to the cluster:
-
-```bash
-# Join worker nodes to the cluster (run this on each worker node)
-kubeadm join 172.31.20.247:6443 --token e3pl9u.qj30eqeff3zs1lxw \
-        --discovery-token-ca-cert-hash sha256:7b9a125b8cf6277d6015bbaf09c4bfc1aebc435b85f02f784b69e1011e91e143
-```
-
-**Note:** The token and hash values will be different for your cluster. Use the exact values provided by your kubeadm init output.
 
 ## Verification Commands
 After completing all steps, verify your cluster is working:
@@ -103,8 +152,8 @@ kubectl get pods -n kube-system
 ```
 
 ## Important Notes
-- The `--apiserver-advertise-address` uses the **private IP** of your master node (172.31.20.247)
-- The `--pod-network-cidr` uses a /16 subnet (10.200.0.0/16) to accommodate both worker nodes
+- The `--apiserver-advertise-address` uses the **private IP** of your master node (172.31.19.113)
+- The `--pod-network-cidr` uses a /16 subnet (10.244.0.0/16) to accommodate both worker nodes
 - The `--upload-certs` flag uploads control-plane certificates to a ConfigMap for easier worker node joining
 - **Save the kubeadm join command** - you'll need it for Step 05 (Joining Worker Nodes)
 - The master node will show as "NotReady" until a pod network add-on is deployed

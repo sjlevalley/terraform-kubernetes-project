@@ -22,7 +22,7 @@ variable "pod_subnets" {
   description = "Pod subnets for worker nodes"
   type = map(string)
   default = {
-    node-0 = "10.200.0.0/24"
-    node-1 = "10.200.1.0/24"
+    node-0 = "10.244.0.0/24"
+    node-1 = "10.244.1.0/24"
   }
 } 
