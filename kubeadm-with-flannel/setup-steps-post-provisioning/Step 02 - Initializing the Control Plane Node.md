@@ -31,7 +31,7 @@ hostnamectl status
 ```bash
 {
 # Initialize the Kubernetes cluster
-sudo kubeadm init --apiserver-advertise-address 172.31.27.117 --pod-network-cidr "10.244.0.0/16" --upload-certs
+sudo kubeadm init --apiserver-advertise-address 172.31.22.38 --pod-network-cidr "10.244.0.0/16" --upload-certs
 
 # Save the join command output - you'll need it for worker nodes
 echo "=== SAVE THE KUBEADM JOIN COMMAND FROM THE OUTPUT ABOVE ==="
@@ -51,6 +51,8 @@ kubectl get nodes
 }
 ```
 
+
+
 ## Step 3: Join Worker Nodes to Cluster
 
 ***RUN ON EACH WORKER NODE***
@@ -58,7 +60,7 @@ Use the exact join command from the kubeadm init output:
 
 ```bash
 # Example join command (use the actual command from kubeadm init output):
-sudo kubeadm join 172.31.27.117:6443 --token <TOKEN> \
+sudo kubeadm join 172.31.22.38:6443 --token <TOKEN> \
         --discovery-token-ca-cert-hash sha256:<HASH>
 ```
 
@@ -96,7 +98,7 @@ kubectl get pods -n kube-system
 ## Troubleshooting Common Issues
 
 ### Issue 1: Hostname Resolution Warning
-**Warning:** `[WARNING Hostname]: hostname "ip-172-31-20-247" could not be reached`
+**Warning:** `[WARNING Hostname]: hostname "ip-172-31-17-166" could not be reached`
 
 **Solution:** Follow Step 1 above to set proper hostnames on all nodes.
 
@@ -137,7 +139,7 @@ sudo kubeadm token create --print-join-command
 ```
 
 ## Important Notes
-- The `--apiserver-advertise-address` uses the **private IP** of your master node (172.31.27.117)
+- The `--apiserver-advertise-address` uses the **private IP** of your master node (172.31.22.38)
 - The `--pod-network-cidr` uses a /16 subnet (10.244.0.0/16) to accommodate both worker nodes
 - The `--upload-certs` flag uploads control-plane certificates to a ConfigMap for easier worker node joining
 - **Save the kubeadm join command** - you'll need it for joining worker nodes

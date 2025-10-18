@@ -56,9 +56,9 @@ ls -la /usr/lib/cni/ | grep flannel
 ```
 
 **Run this on:**
-- **master**: `ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@34.229.127.234`
-- **node-0**: `ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@107.20.57.23`
-- **node-1**: `ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@54.166.206.147`
+- **master**: `ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@98.80.77.111`
+- **node-0**: `ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@54.83.125.17`
+- **node-1**: `ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@3.85.237.175`
 
 ## Step 3: Verify Cluster Status
 

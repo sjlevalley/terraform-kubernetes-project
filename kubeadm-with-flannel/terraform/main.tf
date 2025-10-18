@@ -216,33 +216,6 @@ resource "local_file" "k8s_public_key" {
   file_permission = "0644"
 }
 
-# Jumpbox - Administration host (1 vCPU, 512MB RAM, 10GB storage)
-resource "aws_instance" "jumpbox" {
-  ami           = data.aws_ami.debian.id
-  instance_type = "t3.micro"  # 1 vCPU, 1GB RAM (closest to 512MB requirement)
-  subnet_id     = data.aws_subnet.default.id
-
-  vpc_security_group_ids = [aws_security_group.k8s_cluster.id]
-  key_name               = aws_key_pair.k8s-key.key_name
-
-  associate_public_ip_address = true
-
-  root_block_device {
-    volume_size = 10  # 10GB storage requirement
-    volume_type = "gp3"
-  }
-
-  user_data = <<-EOF
-              #!/bin/bash
-              apt-get update -y
-              apt-get install -y curl wget vim
-              EOF
-
-  tags = {
-    Name = "jumpbox"
-    Role = "administration"
-  }
-}
 
 # Server - Kubernetes control plane (1 vCPU, 2GB RAM, 20GB storage)
 resource "aws_instance" "server" {
@@ -338,7 +311,6 @@ resource "local_file" "machines_txt" {
     server_private_ip = aws_instance.server.private_ip
     node_0_private_ip = aws_instance.node_0.private_ip
     node_1_private_ip = aws_instance.node_1.private_ip
-    jumpbox_public_ip = aws_instance.jumpbox.public_ip
     server_public_ip  = aws_instance.server.public_ip
     node_0_public_ip  = aws_instance.node_0.public_ip
     node_1_public_ip  = aws_instance.node_1.public_ip

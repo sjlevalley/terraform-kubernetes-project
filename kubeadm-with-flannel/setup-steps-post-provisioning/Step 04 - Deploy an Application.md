@@ -14,10 +14,10 @@
 cd
 
 # RUN FROM TERRAFORM DIRECTORY Copy the voting-app directory to the master node
-scp -i "k8s-key.pem" -r "../applications/voting-app" admin@35.172.214.252:~/
+scp -i "k8s-key.pem" -r "../applications/voting-app" admin@98.80.77.111:~/
 
 # Verify the files were copied
-ssh -i "k8s-key.pem" admin@35.172.214.252 "ls -la ~/voting-app/"
+ssh -i "k8s-key.pem" admin@98.80.77.111 "ls -la ~/voting-app/"
 ```
 
 **Important:** Make sure you're in the project root directory (`terraform-kubernetes-project`) when running the SCP command, as the path is relative to that location.
@@ -27,7 +27,7 @@ ssh -i "k8s-key.pem" admin@35.172.214.252 "ls -la ~/voting-app/"
 ***RUN ON MASTER NODE***
 ```bash
 # SSH into the master node
-ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@35.172.214.252
+ssh -i "kubeadm-with-flannel/terraform/k8s-key.pem" admin@98.80.77.111
 
 # Navigate to the voting-app directory and apply the project files
 cd ~/voting-app && kubectl apply -f .
@@ -55,8 +55,8 @@ kubectl get nodes -o wide
 ## Step 4: Test the Application
 
 ### Access the Voting App:
-- **Vote App**: `http://35.172.214.252:30001`
-- **Result App**: `http://35.172.214.252:30002`
+- **Vote App**: `http://98.80.77.111:30001`
+- **Result App**: `http://98.80.77.111:30002`
 
 ### Test Steps:
 1. **Vote**: Go to the vote app and click on "Cats" or "Dogs"
@@ -142,8 +142,8 @@ After successful deployment, you should see:
 
 - **5 pods running**: vote, result, worker, redis, db
 - **4 services**: vote (NodePort 30001), result (NodePort 30002), redis, db
-- **Vote app accessible** at `http://35.172.214.252:30001`
-- **Result app accessible** at `http://35.172.214.252:30002`
+- **Vote app accessible** at `http://98.80.77.111:30001`
+- **Result app accessible** at `http://98.80.77.111:30002`
 - **Voting functionality working** - votes are processed and results are displayed
 
 ## Clean Up
@@ -207,13 +207,13 @@ If external browser access to NodePort services hangs despite local access worki
 2. **Verify the fix is working:**
    ```bash
    # Check service status on any node
-   ssh -i k8s-key.pem admin@3.82.57.51 'sudo systemctl status flannel-tx-checksum-fix.service'
+   ssh -i k8s-key.pem admin@54.83.125.17 'sudo systemctl status flannel-tx-checksum-fix.service'
    
    # Verify TX checksum is disabled
-   ssh -i k8s-key.pem admin@3.82.57.51 'ethtool -k flannel.1 | grep tx-checksumming'
+   ssh -i k8s-key.pem admin@54.83.125.17 'ethtool -k flannel.1 | grep tx-checksumming'
    
    # Test external access
-   curl http://3.82.57.51:30001
+   curl http://54.83.125.17:30001
    ```
 
 3. **Run verification script:**

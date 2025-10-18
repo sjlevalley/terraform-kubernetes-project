@@ -52,10 +52,11 @@
     kubectl version --client
     echo "=== Kubelet Version on ${HOST} ==="
     kubelet --version
+}
 
-    wait 10
 
-    # Enable IP forwarding (required for Kubernetes networking)
+{
+# Enable IP forwarding (required for Kubernetes networking)
 sudo sysctl net.ipv4.ip_forward=1 # Enable IP forwarding temporarily
 echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.conf # Make it permanent
 cat /proc/sys/net/ipv4/ip_forward # Verify IP forwarding is enabled (should return 1)
