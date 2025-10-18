@@ -1,10 +1,10 @@
-# Step 04 - Install CNI Plugin (Flannel)
+# Step 03 - Install CNI Plugin (Flannel)
 
 **Prerequisites:** 
-- Step 01, Step 02, and Step 03 must be completed first
+- Step 01 and Step 02 must be completed first
 - kubeadm init must be successful before running this step
 
-**Note:** CNI prerequisites are now included in Step 02. This step only deploys the Flannel network after kubeadm init.
+**Note:** CNI prerequisites are now included in Step 01. This step only deploys the Flannel network after kubeadm init.
 
 ## Deploy Flannel Network (AFTER KUBEADM INIT)
 

@@ -1,10 +1,10 @@
-# Step 05 - Deploy an Application (Voting App)
+# Step 04 - Deploy an Application (Voting App)
 
 **Prerequisites:** 
-- Step 01, Step 02, Step 03, and Step 04 must be completed first
+- Step 01, Step 02, and Step 03 must be completed first
 - Kubernetes cluster is running and healthy
 - kubectl is configured on the master node
-- **Important**: Ensure Step 04's "Setup Flannel Plugin on ALL Nodes" section was completed on all nodes (master, node-0, and node-1)
+- **Important**: Ensure Step 03's "Setup Flannel Plugin on ALL Nodes" section was completed on all nodes (master, node-0, and node-1)
 
 ## Step 1: Copy Voting App to Master Node
 

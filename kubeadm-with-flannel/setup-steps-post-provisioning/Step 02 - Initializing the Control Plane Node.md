@@ -1,6 +1,6 @@
-# Step 03 - Initializing the Control Plane Node
+# Step 02 - Initializing the Control Plane Node
 
-**Prerequisites:** Ensure Step 01 and Step 02 have been completed on ALL nodes before proceeding.
+**Prerequisites:** Ensure Step 01 has been completed on ALL nodes before proceeding.
 
 ## Step 1: Set Proper Hostnames On All Nodes
 Set proper hostnames to avoid DNS resolution warnings.
@@ -141,4 +141,4 @@ sudo kubeadm token create --print-join-command
 - The `--pod-network-cidr` uses a /16 subnet (10.244.0.0/16) to accommodate both worker nodes
 - The `--upload-certs` flag uploads control-plane certificates to a ConfigMap for easier worker node joining
 - **Save the kubeadm join command** - you'll need it for joining worker nodes
-- The master node will show as "NotReady" until a pod network add-on is deployed (Step 04)
+- The master node will show as "NotReady" until a pod network add-on is deployed (Step 03)
